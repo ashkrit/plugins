@@ -34,7 +34,7 @@
         </action>
         <action id="com.codezen.plugin.MarkStartedAction" class="com.codezen.plugin.MarkStartedAction"
                 text="X - Mark Code"
-                description="X - Mark Code">
+                description="X - mark code">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
         <action id="com.codezen.plugin.LoginAction" class="com.codezen.plugin.LoginAction" text="X - Login">
