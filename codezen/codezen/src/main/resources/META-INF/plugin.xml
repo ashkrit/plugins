@@ -8,14 +8,14 @@
     <name>Codezen</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
+    <vendor email="publicashkrit@gmail.com" url="https://ashkrit.blogspot.com/">Ashkrit</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    Elevate Your Development Experience .<br>
+    <em>Real-time Collaboration</em>
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
@@ -27,4 +27,10 @@
     <extensions defaultExtensionNs="com.intellij">
 
     </extensions>
+    <actions>
+        <action id="com.codezen.plugin.GoogleThisAction" class="com.codezen.plugin.GoogleThisAction"
+                text="Google This Please">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>
