@@ -50,13 +50,17 @@ public class MarkStartedAction extends AnAction {
             VirtualFile file = FileDocumentManager.getInstance().getFile(document);
 
             // Get the text you want to insert
-            String startMarker = "//Code Start \n";
-            String endMarker = "\n //Code end \n";
+            String startMarker = "//Code Start";
+            String endMarker = "//Code end";
 
 
             // Insert the text into the document
-            document.insertString(start, startMarker);
-            document.insertString(end + startMarker.length(), endMarker);
+            //document.insertString(start, startMarker);
+            //document.insertString(end + startMarker.length(), endMarker);
+
+            String fullBlock = String.join("\n", startMarker, selectedText, endMarker);
+            document.replaceString(start, end, fullBlock);
+
 
             // Commit the changes
             editor.getCaretModel().moveToOffset(end + startMarker.length() + endMarker.length());
