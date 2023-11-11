@@ -1,5 +1,6 @@
 package com.codezen.plugin;
 
+import com.codezen.plugin.context.SessionContext;
 import com.codezen.plugin.io.MoreIO;
 import com.codezen.plugin.model.UserInfo;
 import com.google.gson.Gson;
@@ -12,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static com.codezen.plugin.context.SessionContext.CURRENT_USER;
 
 public class LoginAction extends AnAction {
 
@@ -38,6 +41,9 @@ public class LoginAction extends AnAction {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String absolutePath = pluginHome.toFile().getAbsolutePath();
         MoreIO.write(Paths.get(absolutePath, "user.json"), gson.toJson(userInfo).getBytes());
+
+
+        SessionContext.get().put(CURRENT_USER, userInfo.userId);
 
 
     }

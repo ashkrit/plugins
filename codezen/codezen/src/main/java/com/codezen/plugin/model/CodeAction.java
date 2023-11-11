@@ -4,13 +4,15 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
 public class CodeAction {
+    public String user;
     public String actionName;
     public String projectName;
     public String basePath;
     public String codeFile;
     public String codeBlock;
 
-    public CodeAction(String action, Project project, VirtualFile file, String codeBlock) {
+    public CodeAction(String user, String action, Project project, VirtualFile file, String codeBlock) {
+        this.user = user;
         this.actionName = action;
         this.projectName = project.getName();
         this.basePath = project.getBasePath();

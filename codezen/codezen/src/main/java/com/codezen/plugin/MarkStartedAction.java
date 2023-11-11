@@ -1,5 +1,6 @@
 package com.codezen.plugin;
 
+import com.codezen.plugin.context.SessionContext;
 import com.codezen.plugin.io.MoreIO;
 import com.codezen.plugin.model.CodeAction;
 import com.google.gson.Gson;
@@ -62,7 +63,9 @@ public class MarkStartedAction extends AnAction {
 
             assert project != null;
             assert file != null;
-            CodeAction action = new CodeAction("code_marker", project, file, selectedText);
+            String currentUser = SessionContext.get().get(SessionContext.CURRENT_USER);
+
+            CodeAction action = new CodeAction(currentUser, "code_marker", project, file, selectedText);
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String absolutePath = pluginHome.toFile().getAbsolutePath();
