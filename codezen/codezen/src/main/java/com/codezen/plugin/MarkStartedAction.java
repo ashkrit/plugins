@@ -16,10 +16,16 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class MarkStartedAction extends AnAction {
 
@@ -43,29 +49,36 @@ public class MarkStartedAction extends AnAction {
         int end = caretModel.getCurrentCaret().getSelectionEnd();
         LOG.info(String.format("Block selection start %s and end %s", start, end));
 
+        if (selectedText == null || selectedText.trim().isBlank()) {
+            return;
+        }
+
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
             // Get the current document
             Document document = editor.getDocument();
             VirtualFile file = FileDocumentManager.getInstance().getFile(document);
 
+            String padding = caluclateSpacePadding(project, editor);
+
             // Get the text you want to insert
             String startMarker = "//Code Start";
-            String endMarker = "//Code end";
+            String endMarker = padding + "//Code end";
+            String withSpaceSelectedText = Arrays.asList(selectedText.split("\n")).stream().map(line -> padding + line).collect(Collectors.joining("\n"));
 
+            //selectedText.split("\n")
 
             // Insert the text into the document
             //document.insertString(start, startMarker);
             //document.insertString(end + startMarker.length(), endMarker);
 
-            String fullBlock = String.join("\n", startMarker, selectedText, endMarker);
+            String fullBlock = String.join("\n", startMarker, withSpaceSelectedText, endMarker);
             document.replaceString(start, end, fullBlock);
 
 
             // Commit the changes
             editor.getCaretModel().moveToOffset(end + startMarker.length() + endMarker.length());
 
-            assert project != null;
             assert file != null;
             String currentUser = SessionContext.get().get(SessionContext.CURRENT_USER);
 
@@ -77,5 +90,22 @@ public class MarkStartedAction extends AnAction {
             MoreIO.write(Paths.get(absolutePath, String.format("%s_%s.json", "code_mark", System.nanoTime())), bytes);
         });
 
+    }
+
+    private static String caluclateSpacePadding(Project project, Editor editor) {
+        assert project != null;
+        PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
+        if (psiFile != null) {
+            // Get the code style manager
+            CodeStyleManager codeStyleManager = CodeStyleManager.getInstance(project);
+
+            // Get the indentation of the selected code
+            String space = codeStyleManager.getLineIndent(psiFile, editor.getSelectionModel().getSelectionStart());
+
+            // Print the indentation information
+            LOG.info("Indentation of selected code: " + space + " spaces and length is " + space.length());
+            return space;
+        }
+        return "";
     }
 }
