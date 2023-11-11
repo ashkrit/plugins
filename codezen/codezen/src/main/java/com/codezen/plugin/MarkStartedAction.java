@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.editor.Document;
@@ -25,11 +24,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
+import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
 
 public class MarkStartedAction extends AnAction {
 
     private static final Logger LOG = Logger.getInstance(MarkStartedAction.class);
+    public static final String LINE_BREAK = "\n";
     private final Path pluginHome;
 
 
@@ -54,56 +55,63 @@ public class MarkStartedAction extends AnAction {
         }
 
 
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            // Get the current document
-            Document document = editor.getDocument();
-            VirtualFile file = FileDocumentManager.getInstance().getFile(document);
-
-            String padding = caluclateSpacePadding(project, editor);
-
-            // Get the text you want to insert
-            String startMarker = "//Code Start";
-            String endMarker = padding + "//Code end";
-            String withSpaceSelectedText = Arrays.asList(selectedText.split("\n")).stream().map(line -> padding + line).collect(Collectors.joining("\n"));
-
-            //selectedText.split("\n")
-
-            // Insert the text into the document
-            //document.insertString(start, startMarker);
-            //document.insertString(end + startMarker.length(), endMarker);
-
-            String fullBlock = String.join("\n", startMarker, withSpaceSelectedText, endMarker);
-            document.replaceString(start, end, fullBlock);
-
-
-            // Commit the changes
-            editor.getCaretModel().moveToOffset(end + startMarker.length() + endMarker.length());
-
-            assert file != null;
-            String currentUser = SessionContext.get().get(SessionContext.CURRENT_USER);
-
-            CodeAction action = new CodeAction(currentUser, "code_marker", project, file, selectedText);
-
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String absolutePath = pluginHome.toFile().getAbsolutePath();
-            byte[] bytes = gson.toJson(action).getBytes();
-            MoreIO.write(Paths.get(absolutePath, String.format("%s_%s.json", "code_mark", System.nanoTime())), bytes);
-        });
+        runWriteCommandAction(project, () -> _updateDocument(editor, project, selectedText, start, end));
 
     }
 
-    private static String caluclateSpacePadding(Project project, Editor editor) {
+    private void _updateDocument(Editor editor, Project project, String selectedText, int start, int end) {
+
+        Document document = editor.getDocument();
+        VirtualFile file = FileDocumentManager.getInstance().getFile(document);
+
+        String padding = calculateSpacePadding(project, editor);
+
+        // Get the text you want to insert
+        String startMarker = "//Code Start";
+        String endMarker = padding + "//Code end";
+        String selectedCodeWithPadding = padSelectedTextBlock(selectedText, padding);
+        document.replaceString(start, end, prepareFullText(startMarker, selectedCodeWithPadding, endMarker));
+
+        commitChanges(editor, end, startMarker, endMarker);
+
+        saveRequestLocally(file, project, selectedText);
+    }
+
+    @NotNull
+    private static String prepareFullText(String startMarker, String selectedCodeWithPadding, String endMarker) {
+        return String.join(LINE_BREAK, startMarker, selectedCodeWithPadding, endMarker);
+    }
+
+    private static String padSelectedTextBlock(String selectedText, String padding) {
+        return Arrays.stream(selectedText.split(LINE_BREAK))
+                .map(line -> padding + line)
+                .collect(Collectors.joining(LINE_BREAK));
+    }
+
+    private static void commitChanges(Editor editor, int end, String startMarker, String endMarker) {
+        editor.getCaretModel().moveToOffset(end + startMarker.length() + endMarker.length());
+    }
+
+    private void saveRequestLocally(VirtualFile file, Project project, String selectedText) {
+        assert file != null;
+        String currentUser = SessionContext.get().get(SessionContext.CURRENT_USER);
+
+        CodeAction action = new CodeAction(currentUser, "code_marker", project, file, selectedText);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String absolutePath = pluginHome.toFile().getAbsolutePath();
+        byte[] bytes = gson.toJson(action).getBytes();
+        MoreIO.write(Paths.get(absolutePath, String.format("%s_%s.json", "code_mark", System.nanoTime())), bytes);
+    }
+
+    private static String calculateSpacePadding(Project project, Editor editor) {
+
         assert project != null;
         PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
         if (psiFile != null) {
-            // Get the code style manager
             CodeStyleManager codeStyleManager = CodeStyleManager.getInstance(project);
-
-            // Get the indentation of the selected code
             String space = codeStyleManager.getLineIndent(psiFile, editor.getSelectionModel().getSelectionStart());
-
-            // Print the indentation information
-            LOG.info("Indentation of selected code: " + space + " spaces and length is " + space.length());
+            LOG.info("Indentation of selected code: '" + space + "' spaces and length is " + space.length());
             return space;
         }
         return "";
