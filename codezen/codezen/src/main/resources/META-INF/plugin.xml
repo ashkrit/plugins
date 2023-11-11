@@ -29,7 +29,12 @@
     </extensions>
     <actions>
         <action id="com.codezen.plugin.GoogleThisAction" class="com.codezen.plugin.GoogleThisAction"
-                text="Google This Please">
+                text="X - Google This Please">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+        <action id="com.codezen.plugin.MarkStartedAction" class="com.codezen.plugin.MarkStartedAction"
+                text="X - Mark Code"
+                description="X - Mark Code">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
     </actions>
