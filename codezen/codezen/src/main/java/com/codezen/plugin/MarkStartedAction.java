@@ -65,10 +65,11 @@ public class MarkStartedAction extends AnAction {
         VirtualFile file = FileDocumentManager.getInstance().getFile(document);
 
         String padding = calculateSpacePadding(project, editor);
+        Markers markers = new Markers();
 
         // Get the text you want to insert
-        String startMarker = "//Code Start";
-        String endMarker = padding + "//Code end";
+        String startMarker = markers.begin(file.getName());
+        String endMarker = padding + markers.end(file.getName());
         String selectedCodeWithPadding = padSelectedTextBlock(selectedText, padding);
         document.replaceString(start, end, prepareFullText(startMarker, selectedCodeWithPadding, endMarker));
 
@@ -111,8 +112,10 @@ public class MarkStartedAction extends AnAction {
         if (psiFile != null) {
             CodeStyleManager codeStyleManager = CodeStyleManager.getInstance(project);
             String space = codeStyleManager.getLineIndent(psiFile, editor.getSelectionModel().getSelectionStart());
-            LOG.info("Indentation of selected code: '" + space + "' spaces and length is " + space.length());
-            return space;
+            if (space != null) {
+                LOG.info("Indentation of selected code: '" + space + "' spaces and length is " + space.length());
+                return space;
+            }
         }
         return "";
     }
