@@ -3,6 +3,8 @@ package com.codezen.plugin;
 import com.codezen.plugin.context.SessionContext;
 import com.codezen.plugin.io.MoreIO;
 import com.codezen.plugin.model.CodeAction;
+import com.codezen.plugin.model.Sink;
+import com.codezen.plugin.sink.SinkConsumer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -23,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
@@ -75,7 +79,15 @@ public class MarkStartedAction extends AnAction {
 
         commitChanges(editor, end, startMarker, endMarker);
 
-        saveRequestLocally(file, project, selectedText);
+        CodeAction actionData = saveRequestLocally(file, project, selectedText);
+
+        Sink sink = SessionContext.get().get("sink");
+        Map<String, Object> body = new HashMap<>();
+
+        body.put("action", "codemark");
+        body.put("data", actionData);
+
+        new SinkConsumer(sink).send(body, LOG::info, LOG::error);
     }
 
     @NotNull
@@ -93,7 +105,7 @@ public class MarkStartedAction extends AnAction {
         editor.getCaretModel().moveToOffset(end + startMarker.length() + endMarker.length());
     }
 
-    private void saveRequestLocally(VirtualFile file, Project project, String selectedText) {
+    private CodeAction saveRequestLocally(VirtualFile file, Project project, String selectedText) {
         assert file != null;
         String currentUser = SessionContext.get().get(SessionContext.CURRENT_USER);
 
@@ -103,6 +115,7 @@ public class MarkStartedAction extends AnAction {
         String absolutePath = pluginHome.toFile().getAbsolutePath();
         byte[] bytes = gson.toJson(action).getBytes();
         MoreIO.write(Paths.get(absolutePath, String.format("%s_%s.json", "code_mark", System.nanoTime())), bytes);
+        return action;
     }
 
     private static String calculateSpacePadding(Project project, Editor editor) {

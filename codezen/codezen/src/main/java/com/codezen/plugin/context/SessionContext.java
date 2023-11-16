@@ -1,5 +1,10 @@
 package com.codezen.plugin.context;
 
+import com.codezen.plugin.io.MoreIO;
+import com.codezen.plugin.model.Sink;
+import com.codezen.plugin.ssl.HttpUtil;
+import com.google.gson.Gson;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +32,14 @@ public class SessionContext {
     }
 
     public static final SessionContext context = new SessionContext();
+
+
+    public SessionContext() {
+        HttpUtil.disableSSL();
+        String sinkData = MoreIO.readFromClassPath("/config/sink.json").get();
+        Sink sink = new Gson().fromJson(sinkData, Sink.class);
+        put("sink", sink);
+    }
 
     public static SessionContext get() {
         return context;

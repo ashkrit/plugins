@@ -13,6 +13,7 @@ import com.intellij.openapi.ui.Messages;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.codezen.plugin.io.MoreIO;
+import org.jetbrains.annotations.NotNull;
 
 import static com.codezen.plugin.context.SessionContext.CURRENT_USER;
 
@@ -29,7 +30,7 @@ public class LoginAction extends AnAction {
 
 
     @Override
-    public void actionPerformed(AnActionEvent e) {
+    public void actionPerformed(@NotNull AnActionEvent e) {
 
 
         String userId = Messages.showInputDialog("Enter user id", "User Session", null);
