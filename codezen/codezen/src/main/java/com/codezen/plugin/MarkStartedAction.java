@@ -1,6 +1,8 @@
 package com.codezen.plugin;
 
 import com.codezen.plugin.context.SessionContext;
+import com.codezen.plugin.git.CommandLineGiT;
+import com.codezen.plugin.git.GitAPI;
 import com.codezen.plugin.io.MoreIO;
 import com.codezen.plugin.model.CodeAction;
 import com.codezen.plugin.model.Sink;
@@ -23,6 +25,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -117,12 +120,21 @@ public class MarkStartedAction extends AnAction {
 
         CodeAction action = new CodeAction(currentUser, "code_marker", project, file, selectedText);
 
+        String osName = System.getProperty("os.name");
+        action.params.put("os.type", osName);
+
+        GitAPI git = new CommandLineGiT();
+
+        action.params.putAll(git.context(project.getBasePath()));
+
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String absolutePath = pluginHome.toFile().getAbsolutePath();
         byte[] bytes = gson.toJson(action).getBytes();
         MoreIO.write(Paths.get(absolutePath, String.format("%s_%s.json", "code_mark", System.nanoTime())), bytes);
         return action;
     }
+
 
     private static String calculateSpacePadding(Project project, Editor editor) {
 

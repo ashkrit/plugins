@@ -22,6 +22,10 @@ intellij {
 
 dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.eclipse.jgit:org.eclipse.jgit:6.7.0.202309050840-r") {
+        exclude(group = "org.slf4j",module = "slf4j-api")
+    }
+
 }
 
 tasks {

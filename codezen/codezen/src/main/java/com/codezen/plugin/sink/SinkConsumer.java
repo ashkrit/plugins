@@ -68,7 +68,10 @@ public class SinkConsumer {
 
     private static void read(Consumer<String> reponserConsumer, InputStream in) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            reponserConsumer.accept(reader.readLine());
+            String line;
+            while ((line = reader.readLine()) != null) {
+                reponserConsumer.accept(line);
+            }
         }
     }
 }
