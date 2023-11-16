@@ -1,7 +1,6 @@
 package com.codezen.plugin;
 
 import com.codezen.plugin.context.SessionContext;
-import com.codezen.plugin.io.MoreIO;
 import com.codezen.plugin.model.UserInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,10 +8,11 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.Messages;
-import org.jetbrains.annotations.NotNull;
+
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import com.codezen.plugin.io.MoreIO;
 
 import static com.codezen.plugin.context.SessionContext.CURRENT_USER;
 
@@ -23,12 +23,13 @@ public class LoginAction extends AnAction {
 
 
     public LoginAction() {
+
         pluginHome = MoreIO.createPluginHome();
     }
 
 
     @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
+    public void actionPerformed(AnActionEvent e) {
 
 
         String userId = Messages.showInputDialog("Enter user id", "User Session", null);

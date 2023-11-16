@@ -1,0 +1,20 @@
+{
+  "fileTypes": {
+    "java": {
+      "start": "// Code Start",
+      "end": "// Code End"
+    },
+    "xml": {
+      "start": "<!-- Code Start -->",
+      "end": "<!-- Code End -->"
+    },
+    "py": {
+      "start": "## Code Start ",
+      "end": "## Code End "
+    },
+    "sh": {
+      "start": "## Code Start ",
+      "end": "## Code End "
+    }
+  }
+}
