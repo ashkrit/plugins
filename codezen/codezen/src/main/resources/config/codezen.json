@@ -1,0 +1,6 @@
+{
+  "config": {
+    "help.page": "https://www.google.com/",
+    "faq.page": "https://stackoverflow.com/"
+  }
+}

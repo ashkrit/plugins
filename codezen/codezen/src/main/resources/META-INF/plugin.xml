@@ -28,10 +28,16 @@
 
     </extensions>
     <actions>
-        <action id="com.codezen.plugin.GoogleThisAction" class="com.codezen.plugin.GoogleThisAction"
-                text="X - Google This Please">
+        <action id="com.codezen.plugin.ViewDocumentationAction" class="com.codezen.plugin.ViewDocumentationAction"
+                text="X - View Documentation">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
+
+        <action id="com.codezen.plugin.ViewFAQAction" class="com.codezen.plugin.ViewFAQAction"
+                text="X - View FAQ">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+
         <action id="com.codezen.plugin.CoPilotMarkerAction" class="com.codezen.plugin.CoPilotMarkerAction"
                 text="X - Mark Copilot Code"
                 description="X - mark copilot code">
