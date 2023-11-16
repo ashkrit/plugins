@@ -5,6 +5,7 @@ import com.codezen.plugin.io.MoreIO;
 import com.codezen.plugin.model.CodeAction;
 import com.codezen.plugin.model.Sink;
 import com.codezen.plugin.sink.SinkConsumer;
+import com.codezen.plugin.tag.CodeTagger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -69,7 +70,7 @@ public class MarkStartedAction extends AnAction {
         VirtualFile file = FileDocumentManager.getInstance().getFile(document);
 
         String padding = calculateSpacePadding(project, editor);
-        Markers markers = new Markers();
+        CodeTagger markers = new CodeTagger(configFile());
 
         // Get the text you want to insert
         String startMarker = markers.begin(file.getName());
@@ -88,6 +89,11 @@ public class MarkStartedAction extends AnAction {
         body.put("data", actionData);
 
         new SinkConsumer(sink).send(body, LOG::info, LOG::error);
+    }
+
+
+    public String configFile() {
+        return "/config/marker-copilot.json";
     }
 
     @NotNull

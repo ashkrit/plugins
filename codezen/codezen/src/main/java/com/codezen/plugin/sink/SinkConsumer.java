@@ -1,5 +1,6 @@
 package com.codezen.plugin.sink;
 
+import com.codezen.plugin.encode.MessageEncoder;
 import com.codezen.plugin.model.Sink;
 import com.google.gson.Gson;
 import com.intellij.openapi.diagnostic.Logger;
@@ -32,8 +33,7 @@ public class SinkConsumer {
             LOG.info("No endpoint found");
         }
 
-        String endPoint = sink.endPoint;
-
+        String endPoint = MessageEncoder.decode(sink.endPoint);
 
         safeExecute(() -> {
 

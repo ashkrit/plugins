@@ -32,11 +32,18 @@
                 text="X - Google This Please">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
-        <action id="com.codezen.plugin.MarkStartedAction" class="com.codezen.plugin.MarkStartedAction"
-                text="X - Mark Code"
-                description="X - mark code">
+        <action id="com.codezen.plugin.CoPilotMarkerAction" class="com.codezen.plugin.CoPilotMarkerAction"
+                text="X - Mark Copilot Code"
+                description="X - mark copilot code">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
+
+        <action id="com.codezen.plugin.GptMarkerAction" class="com.codezen.plugin.GptMarkerAction"
+                text="X - Mark Gpt Code"
+                description="X - mark gpt code">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+
         <action id="com.codezen.plugin.LoginAction" class="com.codezen.plugin.LoginAction" text="X - Login">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>

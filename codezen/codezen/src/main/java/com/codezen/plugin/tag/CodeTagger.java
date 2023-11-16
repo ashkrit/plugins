@@ -1,4 +1,4 @@
-package com.codezen.plugin;
+package com.codezen.plugin.tag;
 
 import com.codezen.plugin.io.MoreIO;
 import com.codezen.plugin.model.CodeMarker;
@@ -13,21 +13,21 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Markers {
+public class CodeTagger implements CodeTag {
 
     private final Pattern pattern = Pattern.compile("\\.(\\w+)$");
 
     private final Map<String, CodeBlock> commentMarker;
 
-    public Markers() {
+    public CodeTagger(String file) {
 
 
-        Optional<String> data = MoreIO.readFromClassPath("/config/marker.json");
+        Optional<String> data = MoreIO.readFromClassPath(file);
 
         commentMarker = data
                 .map(d -> new Gson().fromJson(d, CodeMarker.class))
                 .map(m -> m.fileTypes)
-                .orElseGet(Markers::defaultRules);
+                .orElseGet(CodeTagger::defaultRules);
 
 
     }
@@ -44,6 +44,7 @@ public class Markers {
     }
 
 
+    @Override
     public String begin(String file) {
         String extension = fileType(file);
 
@@ -61,6 +62,7 @@ public class Markers {
         }
     }
 
+    @Override
     public String end(String file) {
         String extension = fileType(file);
 
