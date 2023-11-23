@@ -5,6 +5,7 @@ import com.codezen.plugin.git.CommandLineGiT;
 import com.codezen.plugin.git.GitAPI;
 import com.codezen.plugin.io.MoreIO;
 import com.codezen.plugin.model.CodeAction;
+import com.codezen.plugin.model.PluginConfig;
 import com.codezen.plugin.model.Sink;
 import com.codezen.plugin.sink.SinkConsumer;
 import com.codezen.plugin.tag.CodeTagger;
@@ -87,6 +88,8 @@ public class MarkStartedAction extends AnAction {
         CodeAction actionData = saveRequestLocally(file, project, selectedText);
 
         Sink sink = SessionContext.get().get(SessionContext.ENTRY_SINK);
+
+
         Map<String, Object> body = new HashMap<>();
 
         body.put("action", ACTION_NAME);

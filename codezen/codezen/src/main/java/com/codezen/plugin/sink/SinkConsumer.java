@@ -1,6 +1,8 @@
 package com.codezen.plugin.sink;
 
+import com.codezen.plugin.context.SessionContext;
 import com.codezen.plugin.encode.MessageEncoder;
+import com.codezen.plugin.model.PluginConfig;
 import com.codezen.plugin.model.Sink;
 import com.google.gson.Gson;
 import com.intellij.openapi.diagnostic.Logger;
@@ -11,8 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.time.Duration;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.codezen.plugin.io.MoreIO.safeExecute;
@@ -27,7 +32,7 @@ public class SinkConsumer {
         this.sink = sink;
     }
 
-    public <T> void send(T value, Consumer<String> reponserConsumer, Consumer<String> errorConsumer) {
+    public void send(Map<String, Object> value, Consumer<String> reponserConsumer, Consumer<String> errorConsumer) {
 
         if (sink.endPoint == null) {
             LOG.info("No endpoint found");
@@ -38,6 +43,9 @@ public class SinkConsumer {
         safeExecute(() -> {
 
             try {
+
+                enrichRequest(value);
+
                 LOG.info(String.format("Sending to %s , data %s", endPoint, value));
 
                 HttpURLConnection connection = createConnection(endPoint);
@@ -57,12 +65,23 @@ public class SinkConsumer {
 
     }
 
+    private static void enrichRequest(Map<String, Object> value) throws UnknownHostException {
+        PluginConfig pluginConfig = SessionContext.get().get(SessionContext.ENTRY_PLUGIN_CONFIG);
+        value.put("plugin.version", pluginConfig.value("plugin.version"));
+        value.put("host.name", InetAddress.getLocalHost().getHostName());
+        value.put("host.ip", InetAddress.getLocalHost().getHostAddress());
+    }
+
     @NotNull
     private static HttpURLConnection createConnection(String endPoint) throws IOException {
+        PluginConfig pluginConfig = SessionContext.get().get(SessionContext.ENTRY_PLUGIN_CONFIG);
+
+        int timeoutInSec = Integer.parseInt(pluginConfig.value("request.timeout").toString());
+
         HttpURLConnection connection = (HttpURLConnection) new URL(endPoint).openConnection();
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
-        connection.setConnectTimeout((int) Duration.ofSeconds(5).toMillis());
+        connection.setConnectTimeout((int) Duration.ofSeconds(timeoutInSec).toMillis());
         return connection;
     }
 
