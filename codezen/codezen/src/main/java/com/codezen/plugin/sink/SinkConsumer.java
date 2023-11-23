@@ -90,6 +90,9 @@ public class SinkConsumer {
     }
 
     private static void read(Consumer<String> reponserConsumer, InputStream in) throws IOException {
+        if (in == null) {
+            return;
+        }
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             String line;
 
