@@ -37,12 +37,14 @@
                 text="X - Mark Copilot Code"
                 description="X - mark copilot code">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="meta alt C"/>
         </action>
 
         <action id="com.codezen.plugin.GptMarkerAction" class="com.codezen.plugin.GptMarkerAction"
                 text="X - Mark Gpt Code"
                 description="X - mark gpt code">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="meta alt G"/>
         </action>
 
         <action id="com.codezen.plugin.StartCodeReview" class="com.codezen.plugin.StartCodeReview"
