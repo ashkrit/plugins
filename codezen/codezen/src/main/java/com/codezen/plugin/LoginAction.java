@@ -12,6 +12,7 @@ import com.intellij.openapi.ui.Messages;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import com.codezen.plugin.io.MoreIO;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +22,6 @@ public class LoginAction extends AnAction {
 
     private static final Logger LOG = Logger.getInstance(LoginAction.class);
     private final Path pluginHome;
-
 
     public LoginAction() {
 
@@ -44,10 +44,7 @@ public class LoginAction extends AnAction {
         String absolutePath = pluginHome.toFile().getAbsolutePath();
         MoreIO.write(Paths.get(absolutePath, "user.json"), gson.toJson(userInfo).getBytes());
 
-
         SessionContext.get().put(CURRENT_USER, userInfo.userId);
-
-
     }
 
 }

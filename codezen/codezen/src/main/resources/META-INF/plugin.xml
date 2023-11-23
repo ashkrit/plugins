@@ -50,6 +50,12 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
 
+        <action id="com.codezen.plugin.StartCodeReview" class="com.codezen.plugin.StartCodeReview"
+                text="X -Start Code Review"
+                description="X - start code review">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+
         <action id="com.codezen.plugin.LoginAction" class="com.codezen.plugin.LoginAction" text="X - Login">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>

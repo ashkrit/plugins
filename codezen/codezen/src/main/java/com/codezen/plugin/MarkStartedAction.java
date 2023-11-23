@@ -40,7 +40,7 @@ public class MarkStartedAction extends AnAction {
 
     private static final Logger LOG = Logger.getInstance(MarkStartedAction.class);
     public static final String LINE_BREAK = "\n";
-    public static final String ACTION_NAME = "codemark";
+    public static final String CODE_MARKER = "code_mark";
     private final Path pluginHome;
 
 
@@ -92,7 +92,7 @@ public class MarkStartedAction extends AnAction {
 
         Map<String, Object> body = new HashMap<>();
 
-        body.put("action", ACTION_NAME);
+        body.put("action", CODE_MARKER);
         body.put("data", actionData);
 
         new SinkConsumer(sink).send(body, LOG::info, LOG::error);
@@ -122,11 +122,9 @@ public class MarkStartedAction extends AnAction {
         assert file != null;
         String currentUser = SessionContext.get().get(SessionContext.CURRENT_USER);
 
-        CodeAction action = new CodeAction(currentUser, "code_marker", project, file, selectedText);
+        CodeAction action = new CodeAction(currentUser, CODE_MARKER, project, file, selectedText);
 
-        String osName = System.getProperty("os.name");
-        action.params.put("os.type", osName);
-        action.params.put("os.user.name", System.getProperty("user.name"));
+        action.params.put("os.type", System.getProperty("os.name"));
 
         GitAPI git = new CommandLineGiT();
 
@@ -136,7 +134,7 @@ public class MarkStartedAction extends AnAction {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String absolutePath = pluginHome.toFile().getAbsolutePath();
         byte[] bytes = gson.toJson(action).getBytes();
-        MoreIO.write(Paths.get(absolutePath, String.format("%s_%s.json", "code_mark", System.nanoTime())), bytes);
+        MoreIO.write(Paths.get(absolutePath, String.format("%s_%s.json", CODE_MARKER, System.nanoTime())), bytes);
         return action;
     }
 

@@ -67,9 +67,13 @@ public class SinkConsumer {
 
     private static void enrichRequest(Map<String, Object> value) throws UnknownHostException {
         PluginConfig pluginConfig = SessionContext.get().get(SessionContext.ENTRY_PLUGIN_CONFIG);
-        value.put("plugin.version", pluginConfig.value("plugin.version"));
+
+        value.put("os.type", System.getProperty("os.name"));
+        value.put("os.user.name", System.getProperty("user.name"));
         value.put("host.name", InetAddress.getLocalHost().getHostName());
         value.put("host.ip", InetAddress.getLocalHost().getHostAddress());
+        value.put("plugin.version", pluginConfig.value("plugin.version"));
+
     }
 
     @NotNull
