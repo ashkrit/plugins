@@ -5,7 +5,6 @@ import com.codezen.plugin.git.CommandLineGiT;
 import com.codezen.plugin.git.GitAPI;
 import com.codezen.plugin.io.MoreIO;
 import com.codezen.plugin.model.CodeAction;
-import com.codezen.plugin.model.PluginConfig;
 import com.codezen.plugin.model.Sink;
 import com.codezen.plugin.sink.SinkConsumer;
 import com.codezen.plugin.tag.CodeTagger;
@@ -26,7 +25,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -40,8 +38,9 @@ public class MarkStartedAction extends AnAction {
 
     private static final Logger LOG = Logger.getInstance(MarkStartedAction.class);
     public static final String LINE_BREAK = "\n";
-    public static final String CODE_MARKER = "code_mark";
+    public static final String ACTION_NAME = "code_mark";
     private final Path pluginHome;
+    private final GitAPI git = new CommandLineGiT();
 
 
     public MarkStartedAction() {
@@ -92,7 +91,7 @@ public class MarkStartedAction extends AnAction {
 
         Map<String, Object> body = new HashMap<>();
 
-        body.put("action", CODE_MARKER);
+        body.put("action", ACTION_NAME);
         body.put("data", actionData);
 
         new SinkConsumer(sink).send(body, LOG::info, LOG::error);
@@ -122,11 +121,11 @@ public class MarkStartedAction extends AnAction {
         assert file != null;
         String currentUser = SessionContext.get().get(SessionContext.CURRENT_USER);
 
-        CodeAction action = new CodeAction(currentUser, CODE_MARKER, project, file, selectedText);
+        CodeAction action = new CodeAction(currentUser, ACTION_NAME, project, file, selectedText);
 
         action.params.put("os.type", System.getProperty("os.name"));
 
-        GitAPI git = new CommandLineGiT();
+
 
         action.params.putAll(git.context(project.getBasePath()));
 
@@ -134,7 +133,7 @@ public class MarkStartedAction extends AnAction {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String absolutePath = pluginHome.toFile().getAbsolutePath();
         byte[] bytes = gson.toJson(action).getBytes();
-        MoreIO.write(Paths.get(absolutePath, String.format("%s_%s.json", CODE_MARKER, System.nanoTime())), bytes);
+        MoreIO.write(Paths.get(absolutePath, String.format("%s_%s.json", ACTION_NAME, System.nanoTime())), bytes);
         return action;
     }
 

@@ -20,6 +20,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -27,14 +28,14 @@ import java.util.Map;
 
 import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
 
-public class StartCodeReview extends AnAction {
+public class ReviewThisFile extends AnAction {
 
-    private static final Logger LOG = Logger.getInstance(StartCodeReview.class);
-    public static final String ACTION_NAME = "code_review";
+    private static final Logger LOG = Logger.getInstance(ReviewThisFile.class);
+    public static final String ACTION_NAME = "review_file";
     private final Path pluginHome;
     private final GitAPI git = new CommandLineGiT();
 
-    public StartCodeReview() {
+    public ReviewThisFile() {
         pluginHome = MoreIO.createPluginHome();
     }
 
@@ -67,6 +68,8 @@ public class StartCodeReview extends AnAction {
         String currentUser = SessionContext.get().get(SessionContext.CURRENT_USER);
 
         CodeAction action = new CodeAction(currentUser, ACTION_NAME, project, file, null);
+        String fileContent = MoreIO.safeExecute(() -> new String(Files.readAllBytes(Paths.get(file.getPath()))));
+        action.params.put("file_content", fileContent);
 
 
         action.params.putAll(git.context(project.getBasePath()));
