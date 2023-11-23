@@ -39,6 +39,7 @@ public class MarkStartedAction extends AnAction {
 
     private static final Logger LOG = Logger.getInstance(MarkStartedAction.class);
     public static final String LINE_BREAK = "\n";
+    public static final String ACTION_NAME = "codemark";
     private final Path pluginHome;
 
 
@@ -85,10 +86,10 @@ public class MarkStartedAction extends AnAction {
 
         CodeAction actionData = saveRequestLocally(file, project, selectedText);
 
-        Sink sink = SessionContext.get().get("sink");
+        Sink sink = SessionContext.get().get(SessionContext.ENTRY_SINK);
         Map<String, Object> body = new HashMap<>();
 
-        body.put("action", "codemark");
+        body.put("action", ACTION_NAME);
         body.put("data", actionData);
 
         new SinkConsumer(sink).send(body, LOG::info, LOG::error);
@@ -122,6 +123,7 @@ public class MarkStartedAction extends AnAction {
 
         String osName = System.getProperty("os.name");
         action.params.put("os.type", osName);
+        action.params.put("os.user.name", System.getProperty("user.name"));
 
         GitAPI git = new CommandLineGiT();
 

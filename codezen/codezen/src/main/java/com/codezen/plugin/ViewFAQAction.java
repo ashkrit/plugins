@@ -15,7 +15,7 @@ public class ViewFAQAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
 
-        PluginConfig config = SessionContext.get().get("plugin.config");
+        PluginConfig config = SessionContext.get().get(SessionContext.ENTRY_PLUGIN_CONFIG);
         BrowserUtil.browse(config.value("faq.page").toString());
 
     }
