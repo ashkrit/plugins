@@ -54,7 +54,7 @@ public class SinkConsumer {
                 connection.getOutputStream().write(bodyText.getBytes());
 
                 read(reponserConsumer, connection.getInputStream());
-                read(errorConsumer, connection.getInputStream());
+                read(errorConsumer, connection.getErrorStream());
 
                 LOG.info("Request Processed");
             } catch (Exception e) {
@@ -92,6 +92,7 @@ public class SinkConsumer {
     private static void read(Consumer<String> reponserConsumer, InputStream in) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             String line;
+
             while ((line = reader.readLine()) != null) {
                 reponserConsumer.accept(line);
             }
