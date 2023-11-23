@@ -5,7 +5,9 @@ import com.codezen.plugin.git.CommandLineGiT;
 import com.codezen.plugin.git.GitAPI;
 import com.codezen.plugin.io.MoreIO;
 import com.codezen.plugin.model.CodeAction;
+import com.codezen.plugin.model.Sink;
 import com.codezen.plugin.model.UserInfo;
+import com.codezen.plugin.sink.SinkConsumer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -22,6 +24,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.codezen.plugin.context.SessionContext.CURRENT_USER;
 import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
@@ -42,12 +46,22 @@ public class StartCodeReview extends AnAction {
 
         final Project project = e.getProject();
         final Editor editor = e.getRequiredData(CommonDataKeys.EDITOR);
-        runWriteCommandAction(project, () -> {
-            Document document = editor.getDocument();
-            VirtualFile file = FileDocumentManager.getInstance().getFile(document);
-            CodeAction action = saveRequestLocally(file, project);
-        });
+        runWriteCommandAction(project, () -> consume(editor, project));
 
+    }
+
+    private void consume(Editor editor, Project project) {
+        Document document = editor.getDocument();
+        VirtualFile file = FileDocumentManager.getInstance().getFile(document);
+        CodeAction action = saveRequestLocally(file, project);
+        Sink sink = SessionContext.get().get(SessionContext.ENTRY_SINK);
+
+        Map<String, Object> body = new HashMap<>();
+
+        body.put("action", CODE_REVIEW);
+        body.put("data", action);
+
+        new SinkConsumer(sink).send(body, LOG::info, LOG::error);
     }
 
     private CodeAction saveRequestLocally(VirtualFile file, Project project) {
