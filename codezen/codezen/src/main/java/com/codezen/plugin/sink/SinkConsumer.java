@@ -47,7 +47,7 @@ public class SinkConsumer {
                 enrichRequest(value);
 
                 LOG.info(String.format("Sending to %s , data %s", endPoint, value));
-
+                HttpUtil.disableSSl();
                 HttpURLConnection connection = createConnection(endPoint);
 
                 String bodyText = new Gson().toJson(value);
