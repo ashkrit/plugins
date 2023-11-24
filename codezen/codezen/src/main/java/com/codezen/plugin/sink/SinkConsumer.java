@@ -18,6 +18,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -71,10 +72,8 @@ public class SinkConsumer {
         PluginConfig pluginConfig = SessionContext.get().get(SessionContext.ENTRY_PLUGIN_CONFIG);
         Hits.MessageIDGen messageIDGen = SessionContext.get().get(SessionContext.ENTRY_HITS);
 
-        Map<String, Object> data = Optional
-                .ofNullable(value.get("data"))
-                .map(v -> (Map<String, Object>) v)
-                .orElse(value);
+        value.put("context", new HashMap<String, Object>());
+        Map<String, Object> data = (Map<String, Object>) value.get("context");
 
         data.put("os.type", System.getProperty("os.name"));
         data.put("os.user.name", System.getProperty("user.name"));
