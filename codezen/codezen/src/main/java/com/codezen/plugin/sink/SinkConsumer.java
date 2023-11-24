@@ -19,6 +19,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static com.codezen.plugin.io.MoreIO.safeExecute;
@@ -70,12 +71,17 @@ public class SinkConsumer {
         PluginConfig pluginConfig = SessionContext.get().get(SessionContext.ENTRY_PLUGIN_CONFIG);
         Hits.MessageIDGen messageIDGen = SessionContext.get().get(SessionContext.ENTRY_HITS);
 
-        value.put("os.type", System.getProperty("os.name"));
-        value.put("os.user.name", System.getProperty("user.name"));
-        value.put("host.name", InetAddress.getLocalHost().getHostName());
-        value.put("host.ip", InetAddress.getLocalHost().getHostAddress());
-        value.put("plugin.version", pluginConfig.value("plugin.version"));
-        value.put("client.messageId", messageIDGen.next());
+        Map<String, Object> data = Optional
+                .ofNullable(value.get("data"))
+                .map(v -> (Map<String, Object>) v)
+                .orElse(value);
+
+        data.put("os.type", System.getProperty("os.name"));
+        data.put("os.user.name", System.getProperty("user.name"));
+        data.put("host.name", InetAddress.getLocalHost().getHostName());
+        data.put("host.ip", InetAddress.getLocalHost().getHostAddress());
+        data.put("plugin.version", pluginConfig.value("plugin.version"));
+        data.put("client.messageId", messageIDGen.next());
 
     }
 
