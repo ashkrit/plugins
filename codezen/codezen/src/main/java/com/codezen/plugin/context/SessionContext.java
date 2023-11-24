@@ -14,6 +14,7 @@ public class SessionContext {
 
     public static final String ENTRY_SINK = "sink";
     public static final String ENTRY_PLUGIN_CONFIG = "plugin.config";
+    public static final String ENTRY_HITS = "plugin.hits";
     public static String CURRENT_USER = "context.current.user";
 
     private final Map<String, Object> data = new HashMap<>();
@@ -42,6 +43,7 @@ public class SessionContext {
         Gson gson = new Gson();
         put(ENTRY_SINK, gson.fromJson(MoreIO.readFromClassPath("/config/sink.json").get(), Sink.class));
         put(ENTRY_PLUGIN_CONFIG, gson.fromJson(MoreIO.readFromClassPath("/config/codezen.json").get(), PluginConfig.class));
+        put(ENTRY_HITS, new Hits.MessageIDGen());
     }
 
     public static SessionContext get() {

@@ -1,5 +1,6 @@
 package com.codezen.plugin.sink;
 
+import com.codezen.plugin.context.Hits;
 import com.codezen.plugin.context.SessionContext;
 import com.codezen.plugin.encode.MessageEncoder;
 import com.codezen.plugin.model.PluginConfig;
@@ -67,12 +68,14 @@ public class SinkConsumer {
 
     private static void enrichRequest(Map<String, Object> value) throws UnknownHostException {
         PluginConfig pluginConfig = SessionContext.get().get(SessionContext.ENTRY_PLUGIN_CONFIG);
+        Hits.MessageIDGen messageIDGen = SessionContext.get().get(SessionContext.ENTRY_HITS);
 
         value.put("os.type", System.getProperty("os.name"));
         value.put("os.user.name", System.getProperty("user.name"));
         value.put("host.name", InetAddress.getLocalHost().getHostName());
         value.put("host.ip", InetAddress.getLocalHost().getHostAddress());
         value.put("plugin.version", pluginConfig.value("plugin.version"));
+        value.put("client.messageId", messageIDGen.next());
 
     }
 
