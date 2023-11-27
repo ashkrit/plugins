@@ -13,6 +13,7 @@ import com.intellij.openapi.wm.WindowManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class SessionContext {
 
@@ -24,6 +25,8 @@ public class SessionContext {
     public static final String ENTRY_PLUGIN_MESSAGE = "plugin.message";
 
     private final Map<String, Object> data = new HashMap<>();
+    private final String sessionKey;
+
 
     public <K> void put(String key, K value) {
         data.put(key, value);
@@ -45,6 +48,7 @@ public class SessionContext {
 
 
     public SessionContext() {
+        this.sessionKey = UUID.randomUUID().toString();
         HttpUtil.disableSSL();
         Gson gson = new Gson();
         put(ENTRY_SINK, gson.fromJson(MoreIO.readFromClassPath("/config/sink.json").get(), Sink.class));
@@ -56,6 +60,10 @@ public class SessionContext {
 
     public static SessionContext get() {
         return context;
+    }
+
+    public String sessionKey() {
+        return sessionKey;
     }
 
     public static void showStatusMessage(Project p, String statusMessage) {

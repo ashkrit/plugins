@@ -67,8 +67,9 @@ public class SinkConsumer {
     }
 
     private static void enrichRequest(Map<String, Object> value) throws UnknownHostException {
-        PluginConfig pluginConfig = SessionContext.get().get(SessionContext.ENTRY_PLUGIN_CONFIG);
-        Hits.MessageIDGen messageIDGen = SessionContext.get().get(SessionContext.ENTRY_HITS);
+        SessionContext sessionContext = SessionContext.get();
+        PluginConfig pluginConfig = sessionContext.get(SessionContext.ENTRY_PLUGIN_CONFIG);
+        Hits.MessageIDGen messageIDGen = sessionContext.get(SessionContext.ENTRY_HITS);
 
         value.put("context", new HashMap<String, Object>());
         Map<String, Object> data = (Map<String, Object>) value.get("context");
@@ -84,8 +85,7 @@ public class SinkConsumer {
 
         data.put("ide.app", appInfo.getFullApplicationName());
         data.put("ide.build", appInfo.getBuild().asString());
-
-
+        data.put("session.id", sessionContext.sessionKey());
     }
 
     @NotNull
