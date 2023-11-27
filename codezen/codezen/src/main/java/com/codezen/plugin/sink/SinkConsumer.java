@@ -36,6 +36,7 @@ public class SinkConsumer {
         this.sink = sink;
     }
 
+
     public void send(Map<String, Object> value, Consumer<String> reponserConsumer, Consumer<String> errorConsumer) {
 
         if (sink.endPoint == null) {
@@ -44,28 +45,24 @@ public class SinkConsumer {
 
         String endPoint = MessageEncoder.decode(sink.endPoint);
 
-        safeExecute(() -> {
+        try {
 
-            try {
+            enrichRequest(value);
 
-                enrichRequest(value);
+            LOG.info(String.format("Sending to %s , data %s", endPoint, value));
+            HttpUtil.disableSSl();
+            HttpURLConnection connection = createConnection(endPoint);
 
-                LOG.info(String.format("Sending to %s , data %s", endPoint, value));
-                HttpUtil.disableSSl();
-                HttpURLConnection connection = createConnection(endPoint);
+            String bodyText = new Gson().toJson(value);
+            connection.getOutputStream().write(bodyText.getBytes());
 
-                String bodyText = new Gson().toJson(value);
-                connection.getOutputStream().write(bodyText.getBytes());
+            read(reponserConsumer, connection.getInputStream());
+            read(errorConsumer, connection.getErrorStream());
 
-                read(reponserConsumer, connection.getInputStream());
-                read(errorConsumer, connection.getErrorStream());
-
-                LOG.info("Request Processed");
-            } catch (Exception e) {
-                LOG.error(e);
-            }
-            return null;
-        });
+            LOG.info("Request Processed");
+        } catch (Exception e) {
+            LOG.error(e);
+        }
 
     }
 
@@ -82,7 +79,6 @@ public class SinkConsumer {
         data.put("host.ip", InetAddress.getLocalHost().getHostAddress());
         data.put("plugin.version", pluginConfig.value("plugin.version"));
         data.put("client.messageId", messageIDGen.next());
-
 
         ApplicationInfo appInfo = ApplicationInfo.getInstance();
 
