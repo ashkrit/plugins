@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.codezen.plugin.context.SessionContext.showStatusMessage;
 import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
 
 public class MarkStartedAction extends AnAction {
@@ -94,6 +95,8 @@ public class MarkStartedAction extends AnAction {
         body.put("action", ACTION_NAME);
         body.put("data", actionData);
 
+        showStatusMessage(project, "Code Marked");
+
         new SinkConsumer(sink).send(body, LOG::info, LOG::error);
     }
 
@@ -124,7 +127,6 @@ public class MarkStartedAction extends AnAction {
         CodeAction action = new CodeAction(currentUser, ACTION_NAME, project, file, selectedText);
 
         action.params.put("os.type", System.getProperty("os.name"));
-
 
 
         action.params.putAll(git.context(project.getBasePath()));

@@ -28,6 +28,10 @@
 
         <postStartupActivity implementation="com.codezen.plugin.PluginStartup"/>
 
+        <statusBarWidgetFactory implementation="com.codezen.plugin.status.PluginStatusWidgetFactory"
+                                id="com.codezen.plugin.status.PluginStatusWidgetFactory"
+                                order="first" />
+
     </extensions>
     <actions>
         <action id="com.codezen.plugin.ViewDocumentationAction" class="com.codezen.plugin.ViewDocumentationAction"

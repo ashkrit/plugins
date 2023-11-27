@@ -6,6 +6,7 @@ import com.codezen.plugin.encode.MessageEncoder;
 import com.codezen.plugin.model.PluginConfig;
 import com.codezen.plugin.model.Sink;
 import com.google.gson.Gson;
+import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,6 +82,13 @@ public class SinkConsumer {
         data.put("host.ip", InetAddress.getLocalHost().getHostAddress());
         data.put("plugin.version", pluginConfig.value("plugin.version"));
         data.put("client.messageId", messageIDGen.next());
+
+
+        ApplicationInfo appInfo = ApplicationInfo.getInstance();
+
+        data.put("ide.app", appInfo.getFullApplicationName());
+        data.put("ide.build", appInfo.getBuild().asString());
+
 
     }
 

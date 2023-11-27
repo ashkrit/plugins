@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.codezen.plugin.context.SessionContext.showStatusMessage;
 import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
 
 public class ReviewThisFile extends AnAction {
@@ -60,6 +61,7 @@ public class ReviewThisFile extends AnAction {
         body.put("action", ACTION_NAME);
         body.put("data", action);
 
+        showStatusMessage(project, "Review Submitted");
         new SinkConsumer(sink).send(body, LOG::info, LOG::error);
     }
 
