@@ -5,11 +5,9 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
 
-import java.io.*;
-import java.util.Arrays;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class CommandLineGiT implements GitAPI {
 
@@ -23,6 +21,13 @@ public class CommandLineGiT implements GitAPI {
             LOG.info("Executing " + path);
 
             String gitFolder = findGitFolder(path);
+            if (notGitFolder(gitFolder)) {
+                values.put("git.baseConfig", "na");
+                values.put("git.repo", "na");
+                values.put("git.branch", "na");
+                return values;
+            }
+
             try (Git git = Git.open(new File(gitFolder))) {
 
                 Repository repository = git.getRepository();
@@ -45,6 +50,10 @@ public class CommandLineGiT implements GitAPI {
 
         return values;
 
+    }
+
+    private static boolean notGitFolder(String gitFolder) {
+        return !new File(gitFolder, ".git").exists();
     }
 
     private static String findGitFolder(String path) {
