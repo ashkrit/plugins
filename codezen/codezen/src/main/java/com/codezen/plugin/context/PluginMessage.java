@@ -29,7 +29,7 @@ public class PluginMessage {
     }
 
     public static class ServerMessage {
-        public String type;
+        public String type; //nextPing;statusMessage,popupMessage
         public Map<String, Object> data;
 
     }
