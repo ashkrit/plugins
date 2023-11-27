@@ -26,6 +26,8 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
 
+        <postStartupActivity implementation="com.codezen.plugin.PluginStartup"/>
+
     </extensions>
     <actions>
         <action id="com.codezen.plugin.ViewDocumentationAction" class="com.codezen.plugin.ViewDocumentationAction"

@@ -3,6 +3,7 @@
     "help.page": "https://www.google.com/",
     "faq.page": "https://stackoverflow.com/",
     "request.timeout": "10",
-    "plugin.version": "202312.1"
+    "plugin.version": "202312.1",
+    "polling.interval.sec": "10"
   }
 }
