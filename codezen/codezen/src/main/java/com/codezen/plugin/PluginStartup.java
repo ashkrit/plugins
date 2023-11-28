@@ -64,7 +64,7 @@ public class PluginStartup implements StartupActivity.Background {
         new SinkConsumer(sink).send(body, s -> reply.append(s).append("\n"), s -> error.append(s).append("\n"));
 
         LOG.info("Reply: " + reply);
-        LOG.error("Error: " + error);
+        //LOG.error("Error: " + error);
     }
 
 
