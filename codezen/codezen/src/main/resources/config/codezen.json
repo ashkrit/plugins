@@ -4,8 +4,7 @@
     "faq.page": "https://stackoverflow.com/",
     "request.timeout": "10",
     "plugin.version": "202312.1",
-    "polling.interval.sec": "30",
-    "status.refresh.seconds": "10",
+    "polling.interval.sec": "300",
     "plugin.name": "CodeZen"
   }
 }
