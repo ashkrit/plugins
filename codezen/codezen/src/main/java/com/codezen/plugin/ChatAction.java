@@ -1,7 +1,9 @@
 package com.codezen.plugin;
 
+import com.codezen.plugin.status.PluginStatusWidget;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -14,6 +16,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ChatAction extends AnAction implements ToolWindowFactory {
+
+    private static final Logger LOG = Logger.getInstance(ChatAction.class);
+
     @Override
     public void actionPerformed(AnActionEvent e) {
         // Nothing to do here for this example
@@ -73,6 +78,8 @@ public class ChatAction extends AnAction implements ToolWindowFactory {
 
             // Append the message to the chat area
             chatArea.append("You: " + message + "\n");
+
+            LOG.info("Sending message: " + message);
 
             // Clear the input field
             inputArea.setText("");
