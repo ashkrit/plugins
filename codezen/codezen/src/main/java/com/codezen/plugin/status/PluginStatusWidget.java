@@ -15,7 +15,6 @@ public class PluginStatusWidget implements StatusBarWidget {
     private static final Logger LOG = Logger.getInstance(PluginStatusWidget.class);
     public static final String NAME = PluginStatusWidget.class.getName();
 
-    private Timer timer;
 
     @Contract(pure = true)
     public PluginStatusWidget(Project project) {
@@ -41,9 +40,5 @@ public class PluginStatusWidget implements StatusBarWidget {
 
     @Override
     public void dispose() {
-        if (timer != null) {
-            timer.cancel();
-            timer.purge();
-        }
     }
 }

@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ChatAction extends AnAction implements ToolWindowFactory {
-
     @Override
     public void actionPerformed(AnActionEvent e) {
         // Nothing to do here for this example
@@ -43,13 +42,17 @@ public class ChatAction extends AnAction implements ToolWindowFactory {
             inputArea = new JTextArea();
             sendButton = new JButton("Ask");
 
+            // Set the initial number of rows for the inputArea
+            inputArea.setRows(5);
+
             // Add components to the panel
             panel.add(new JScrollPane(chatArea), BorderLayout.CENTER);
 
-            inputArea.setRows(5);
             JPanel inputPanel = new JPanel(new BorderLayout());
             inputPanel.add(new JScrollPane(inputArea), BorderLayout.CENTER);
             inputPanel.add(sendButton, BorderLayout.EAST);
+
+            panel.add(inputPanel, BorderLayout.SOUTH);
 
             // Set action for the send button
             sendButton.addActionListener(new ActionListener() {

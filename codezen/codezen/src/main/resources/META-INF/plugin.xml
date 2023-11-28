@@ -76,6 +76,7 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
 
+
         <!--
         <action id="com.codezen.plugin.ChatAction" class="com.codezen.plugin.ChatAction" text="X - Chat">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
