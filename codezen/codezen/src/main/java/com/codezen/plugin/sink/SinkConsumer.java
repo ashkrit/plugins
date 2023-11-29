@@ -40,7 +40,10 @@ public class SinkConsumer {
     public void send(Map<String, Object> value, Consumer<String> reponserConsumer, Consumer<String> errorConsumer) {
 
         if (sink.endPoint == null) {
-            LOG.info("No endpoint found");
+           // Code Start
+             LOG.warn("skip");
+            // Code End
+            return;
         }
 
         String endPoint = MessageEncoder.decode(sink.endPoint);
