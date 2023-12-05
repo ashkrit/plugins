@@ -16,5 +16,8 @@
 -->
 
 
-# plugins
-IDE Plugins
+Plugin
+===================
+Comprises a suite of IntelliJ IDE plugins, designed for white-label use and easily extendable to incorporate application-specific behaviors
+
+
