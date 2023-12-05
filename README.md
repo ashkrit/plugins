@@ -18,7 +18,7 @@
 
 # Plugin Project
 
-Welcome to the IntelliJ Plugin Project! This plugin is designed to enhance developer productivity within the IntelliJ IDEA IDE by providing additional features for code management, collaboration, and documentation.
+Welcome to the IntelliJ Plugin Project! This plugin is designed to enhance developer productivity within the IntelliJ IDEA IDE by providing features for code management, collaboration, and documentation.
 
 ## Features
 
