@@ -57,9 +57,7 @@ public class SinkConsumer {
     public void send(Map<String, Object> value, Consumer<String> reponserConsumer, Consumer<String> errorConsumer) {
 
         if (sink.endPoint == null) {
-           // Code Start
-             LOG.warn("skip");
-            // Code End
+            LOG.warn("skip");
             return;
         }
 
