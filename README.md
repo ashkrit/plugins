@@ -36,3 +36,9 @@ total 32
 
 
 ```
+
+
+Where is plugin distribution 
+=============================
+
+plugins/tree/main/codezen/codezen/dist
