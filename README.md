@@ -16,13 +16,58 @@
 -->
 
 
-Plugin
-===================
-Comprises a suite of IntelliJ IDE plugins, designed for white-label use and easily extendable to incorporate application-specific behaviors
+# Plugin Project
+
+Welcome to the IntelliJ Plugin Project! This plugin is designed to enhance developer productivity within the IntelliJ IDEA IDE by providing additional features for code management, collaboration, and documentation.
+
+## Features
+
+### 1. Code Tagging
+
+Easily tag your code segments to categorize and organize different parts of your project. Tags help in quickly navigating and understanding the codebase.
+
+To tag a section of code, use the following shortcut: [Shortcut Here].
+
+### 2. Code Review
+
+Facilitate code reviews directly within IntelliJ IDEA. Streamline collaboration by adding comments, suggesting changes, and tracking review progress without leaving the IDE.
+
+To initiate a code review, follow these steps: [Steps Here].
+
+### 3. Test Case Generation
+
+Automatically generate test cases for your code to ensure comprehensive test coverage. This feature helps in accelerating the testing process and ensures the robustness of your application.
+
+To generate test cases, utilize the following command: [Command Here].
+
+### 4. Documentation Access
+
+Instantly access relevant documentation while coding. Improve efficiency by seamlessly integrating documentation lookup within the IntelliJ IDEA environment.
+
+To access documentation, use the following command: [Command Here].
+
+## Installation
+
+1. Clone the repository: `git clone https://github.com/your-username/intellij-plugin.git`
+2. Open IntelliJ IDEA.
+3. Navigate to `File` > `Settings` > `Plugins`.
+4. Click on `Install Plugin from Disk` and select the JAR file from the cloned repository.
+5. Restart IntelliJ IDEA.
+
+## Usage
+
+Once the plugin is installed, you can start using the added features right away. Refer to the documentation or the built-in help menu for more information on each feature.
+
+## Contribution
+
+Contributions are welcome! If you have ideas for new features or improvements, feel free to open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the [License Name] - see the [LICENSE.md](LICENSE.md) file for details.
 
 
-How to chnage config
-====================
+## How to chnage config
 
 Config files are avilable in  plugins/tree/main/codezen/codezen/src/main/resources/config
 ```
@@ -38,7 +83,7 @@ total 32
 ```
 
 
-Where is plugin distribution 
+## Where is plugin distribution 
 =============================
 
 plugins/tree/main/codezen/codezen/dist
