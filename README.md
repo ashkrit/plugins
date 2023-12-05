@@ -64,7 +64,7 @@ Contributions are welcome! If you have ideas for new features or improvements, f
 
 ## License
 
-This project is licensed under the [License Name] - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the [License Name] - see the [codezen/codezen/LICENSE.md](LICENSE.md) file for details.
 
 
 ## How to change config
