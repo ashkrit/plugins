@@ -67,7 +67,7 @@ Contributions are welcome! If you have ideas for new features or improvements, f
 This project is licensed under the [License Name] - see the [LICENSE.md](LICENSE.md) file for details.
 
 
-## How to chnage config
+## How to change config
 
 Config files are avilable in  plugins/tree/main/codezen/codezen/src/main/resources/config
 ```
