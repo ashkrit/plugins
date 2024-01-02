@@ -8,6 +8,12 @@ import spark.Request;
 import spark.Response;
 import spark.Spark;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import static spark.Spark.path;
@@ -47,7 +53,34 @@ public class Main {
         logger.info("Received {}", body);
         Map<String, Object> requestObject = new Gson().fromJson(body, Map.class);
 
-        logger.info("Processing action {}", requestObject.get("actionName"));
+        String actionName = (String) requestObject.get("action");
+        logger.info("Processing action {}", actionName);
+
+        if (actionName.equals("gpt_command")) {
+            asGptCommand(requestObject);
+
+
+        }
         return requestObject;
+    }
+
+    private static void asGptCommand(Map<String, Object> requestObject) {
+        Map<String, Object> data = (Map<String, Object>) requestObject.get("data");
+        String query = (String) data.get("prompt");
+        try {
+            URL u = Main.class.getResource("/" + query);
+            Path p = toPath(u);
+            requestObject.put("reply", new String(Files.readAllBytes(p)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Path toPath(URL u) {
+        try {
+            return Paths.get(u.toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
