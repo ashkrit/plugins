@@ -34,6 +34,7 @@ import com.codezen.plugin.io.MoreIO;
 import org.jetbrains.annotations.NotNull;
 
 import static com.codezen.plugin.context.SessionContext.CURRENT_USER;
+import static com.codezen.plugin.context.SessionContext.CURRENT_USER_CONTEXT;
 
 public class LoginAction extends AnAction {
 
@@ -49,19 +50,16 @@ public class LoginAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
 
+        String token = Messages.showPasswordDialog("GptToken", "Gpt Token");
 
-        String userId = Messages.showInputDialog("Enter user id", "User Session", null);
-        String pass = Messages.showPasswordDialog("Password", "Password");
-        LOG.info(String.format("Session started for %s and pas %s ", userId, pass));
-
-
-        UserInfo userInfo = new UserInfo(userId, pass);
+        UserInfo userInfo = new UserInfo(token);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String absolutePath = pluginHome.toFile().getAbsolutePath();
         MoreIO.write(Paths.get(absolutePath, "user.json"), gson.toJson(userInfo).getBytes());
 
         SessionContext.get().put(CURRENT_USER, userInfo.userId);
+        SessionContext.get().put(CURRENT_USER_CONTEXT, userInfo);
     }
 
 }

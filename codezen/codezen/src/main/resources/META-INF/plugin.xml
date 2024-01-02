@@ -32,7 +32,9 @@
                                 id="com.codezen.plugin.status.PluginStatusWidgetFactory"
                                 order="first" />
 
+
         <toolWindow factoryClass="com.codezen.plugin.ChatAction" id="ChatAction"/>
+
 
     </extensions>
     <actions>
@@ -55,6 +57,7 @@
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift 2"/>
         </action>
 
+        <!--
         <action id="com.codezen.plugin.StartCodeReview" class="com.codezen.plugin.StartCodeReview"
                 text="X - Start Code Review"
                 description="X - start code review">
@@ -66,22 +69,18 @@
                 description="X - review this file">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
+        -->
+
+        <action id="com.codezen.plugin.LoginAction" class="com.codezen.plugin.LoginAction" text="X - Login">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+
 
         <action id="com.codezen.plugin.ViewFAQAction" class="com.codezen.plugin.ViewFAQAction"
                 text="X - Open App">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
 
-        <!--
-        <action id="com.codezen.plugin.LoginAction" class="com.codezen.plugin.LoginAction" text="X - Login">
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </action>
-        -->
-        <!--
-        <action id="com.codezen.plugin.ChatAction" class="com.codezen.plugin.ChatAction" text="X - Chat">
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </action>
-        -->
 
     </actions>
 </idea-plugin>

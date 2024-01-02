@@ -144,11 +144,7 @@ public class MarkStartedAction extends AnAction {
         CodeAction action = new CodeAction(currentUser, ACTION_NAME, project, file, selectedText);
 
         action.params.put("os.type", System.getProperty("os.name"));
-
-
         action.params.putAll(git.context(project.getBasePath()));
-
-
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String absolutePath = pluginHome.toFile().getAbsolutePath();
         byte[] bytes = gson.toJson(action).getBytes();

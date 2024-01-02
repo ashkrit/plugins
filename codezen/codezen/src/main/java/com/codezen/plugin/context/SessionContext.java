@@ -38,6 +38,7 @@ public class SessionContext {
     public static final String ENTRY_PLUGIN_CONFIG = "plugin.config";
     public static final String ENTRY_HITS = "plugin.hits";
     public static String CURRENT_USER = "context.current.user";
+    public static String CURRENT_USER_CONTEXT = "context.current.user";
 
     public static final String ENTRY_PLUGIN_MESSAGE = "plugin.message";
 

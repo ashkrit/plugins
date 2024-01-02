@@ -17,6 +17,13 @@
 
 package com.codezen.plugin;
 
+import com.codezen.plugin.context.SessionContext;
+import com.codezen.plugin.io.MoreIO;
+import com.codezen.plugin.model.GptAction;
+import com.codezen.plugin.model.Sink;
+import com.codezen.plugin.sink.SinkConsumer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diagnostic.Logger;
@@ -28,12 +35,21 @@ import com.intellij.ui.content.ContentFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChatAction extends AnAction implements ToolWindowFactory {
 
     private static final Logger LOG = Logger.getInstance(ChatAction.class);
+
+    public static final String ACTION_NAME = "gpt_command";
+    private final Path pluginHome;
+
+    public ChatAction() {
+        this.pluginHome = MoreIO.createPluginHome();
+    }
 
     @Override
     public void actionPerformed(AnActionEvent e) {
@@ -43,7 +59,7 @@ public class ChatAction extends AnAction implements ToolWindowFactory {
     @Override
     public void createToolWindowContent(Project project, ToolWindow toolWindow) {
         // Create and show the chat UI in the tool window
-        ChatUI chatUI = new ChatUI();
+        ChatUI chatUI = new ChatUI(project, pluginHome);
         ContentFactory contentFactory = ContentFactory.getInstance();
         Content content = contentFactory.createContent(chatUI.getPanel(), "", false);
         toolWindow.getContentManager().addContent(content);
@@ -51,17 +67,19 @@ public class ChatAction extends AnAction implements ToolWindowFactory {
 
     private static class ChatUI {
 
-        private JPanel panel;
-        private JTextArea chatArea;
-        private JTextArea inputArea;
-        private JButton sendButton;
+        private final JPanel panel;
+        private final JTextArea chatArea;
+        private final JTextArea inputArea;
+        private final Path pluginHome;
 
-        public ChatUI() {
+        public ChatUI(Project project, Path pluginHome) {
+
+            this.pluginHome = pluginHome;
             // Initialize UI components
             panel = new JPanel(new BorderLayout());
             chatArea = new JTextArea();
             inputArea = new JTextArea();
-            sendButton = new JButton("Ask");
+            JButton sendButton = new JButton("Ask");
 
             // Set the initial number of rows for the inputArea
             inputArea.setRows(5);
@@ -76,29 +94,54 @@ public class ChatAction extends AnAction implements ToolWindowFactory {
             panel.add(inputPanel, BorderLayout.SOUTH);
 
             // Set action for the send button
-            sendButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    sendMessage();
-                }
-            });
+            sendButton.addActionListener(e -> sendMessage(project));
         }
 
         public JPanel getPanel() {
             return panel;
         }
 
-        private void sendMessage() {
-            // Get the text from the input field
+        private void sendMessage(Project project) {
+
             String message = inputArea.getText();
 
-            // Append the message to the chat area
             chatArea.append("You: " + message + "\n");
-
             LOG.info("Sending message: " + message);
 
-            // Clear the input field
+            GptAction action = createAndSaveLocally(project, message);
+            Sink sink = SessionContext.get().get(SessionContext.ENTRY_SINK);
+
+            Map<String, Object> body = new HashMap<>();
+
+            body.put("action", ACTION_NAME);
+            body.put("data", action);
+
             inputArea.setText("");
+
+            chatArea.append("Agent: " + " --- " + "\n");
+            new SinkConsumer(sink).send(body, x -> {
+                chatArea.append(x);
+                LOG.info(x);
+            }, LOG::error);
+
+
+        }
+
+        private GptAction createAndSaveLocally(Project project, String prompt) {
+
+            String currentUser = SessionContext.get().get(SessionContext.CURRENT_USER);
+
+            GptAction action = new GptAction(currentUser, ACTION_NAME, project, prompt);
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String absolutePath = pluginHome.toFile().getAbsolutePath();
+
+            byte[] bytes = gson.toJson(action).getBytes();
+            MoreIO.write(Paths.get(absolutePath, String.format("%s_%s.json", ACTION_NAME, System.nanoTime())), bytes);
+
+            return action;
         }
     }
+
+
 }

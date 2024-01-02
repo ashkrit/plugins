@@ -17,12 +17,26 @@
 
 package com.codezen.plugin.model;
 
-public class UserInfo {
-    public final String token;
-    public String userId;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 
+import java.util.HashMap;
+import java.util.Map;
 
-    public UserInfo(String token) {
-        this.token = token;
+public class GptAction {
+    public String prompt;
+    public String user;
+    public String actionName;
+    public String projectName;
+    public String basePath;
+
+    public Map<String, Object> params = new HashMap<>();
+
+    public GptAction(String user, String action, Project project, String prompt) {
+        this.user = user;
+        this.actionName = action;
+        this.projectName = project.getName();
+        this.basePath = project.getBasePath();
+        this.prompt = prompt;
     }
 }
