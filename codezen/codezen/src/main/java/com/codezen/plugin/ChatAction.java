@@ -120,9 +120,13 @@ public class ChatAction extends AnAction implements ToolWindowFactory {
 
             chatArea.append("Agent: " + " --- " + "\n");
             new SinkConsumer(sink).send(body, x -> {
-                chatArea.append(x);
+                Map<String, Object> reply = new Gson().fromJson(x, Map.class);
+                String serverReply = (String) reply.get("reply");
+                chatArea.append(serverReply);
                 LOG.info(x);
             }, LOG::error);
+
+            chatArea.append("\n");
 
 
         }

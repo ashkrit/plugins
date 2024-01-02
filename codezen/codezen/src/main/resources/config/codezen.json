@@ -5,7 +5,6 @@
     "request.timeout": "10",
     "plugin.version": "202312.1",
     "polling.interval.sec": "300",
-    "plugin.name": "CodeZen",
-    "login.action":""
+    "plugin.name": "CodeZen"
   }
 }
