@@ -34,7 +34,7 @@ import com.codezen.plugin.io.MoreIO;
 import org.jetbrains.annotations.NotNull;
 
 import static com.codezen.plugin.context.SessionContext.CURRENT_USER;
-import static com.codezen.plugin.context.SessionContext.CURRENT_USER_CONTEXT;
+import static com.codezen.plugin.context.SessionContext.CURRENT_USER_PARAMS;
 
 public class LoginAction extends AnAction {
 
@@ -59,7 +59,7 @@ public class LoginAction extends AnAction {
         MoreIO.write(Paths.get(absolutePath, "user.json"), gson.toJson(userInfo).getBytes());
 
         SessionContext.get().put(CURRENT_USER, userInfo.userId);
-        SessionContext.get().put(CURRENT_USER_CONTEXT, userInfo);
+        SessionContext.get().put(CURRENT_USER_PARAMS, userInfo);
     }
 
 }

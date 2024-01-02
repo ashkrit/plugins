@@ -21,6 +21,7 @@ import com.codezen.plugin.context.SessionContext;
 import com.codezen.plugin.io.MoreIO;
 import com.codezen.plugin.model.GptAction;
 import com.codezen.plugin.model.Sink;
+import com.codezen.plugin.model.UserInfo;
 import com.codezen.plugin.sink.SinkConsumer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,6 +40,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ChatAction extends AnAction implements ToolWindowFactory {
 
@@ -103,18 +105,28 @@ public class ChatAction extends AnAction implements ToolWindowFactory {
 
         private void sendMessage(Project project) {
 
+            SessionContext sessionContext = SessionContext.get();
+
             String message = inputArea.getText();
 
             chatArea.append("You: " + message + "\n");
             LOG.info("Sending message: " + message);
 
             GptAction action = createAndSaveLocally(project, message);
-            Sink sink = SessionContext.get().get(SessionContext.ENTRY_SINK);
+
+            UserInfo userInfo = sessionContext.get(SessionContext.CURRENT_USER_PARAMS);
+            String token = Optional.ofNullable(userInfo).map(u -> u.token).orElse("");
+
+            action.params.put("token", token);
 
             Map<String, Object> body = new HashMap<>();
 
             body.put("action", ACTION_NAME);
             body.put("data", action);
+
+            Sink sink = sessionContext.get(SessionContext.ENTRY_SINK);
+
+
 
             inputArea.setText("");
 
